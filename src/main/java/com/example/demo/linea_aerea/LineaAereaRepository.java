@@ -9,5 +9,9 @@ public interface LineaAereaRepository extends JpaRepository<LineaAerea, Long> {
 
     // Para el UNIQUE de codigoLinea en el POST
     boolean existsByCodigoLinea(String codigoLinea);
+
+
+
+    LineaAerea findByCodigoLinea(String codigoLinea);   // devuelve null si no existe
     
 }

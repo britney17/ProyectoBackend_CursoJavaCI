@@ -1,56 +1,105 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<!-- Inserta el <head> comun y le pasa el titulo de esta pagina -->
 <head th:replace="~{fragments/layout :: head('Inicio')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar('inicio')}"></nav>
 
 <main class="container py-4">
     <div class="portada mb-4">
-        <p class="eyebrow">// Unidad II · Desarrollo Backend con Java</p>
-        <h1 class="titulo">Spring Boot + Thymeleaf</h1>
-        <p class="lead mb-0">Las mismas entidades y endpoints del curso, ahora en páginas HTML.</p>
+        <p class="eyebrow">// Gestión de vuelos · Spring Boot + Thymeleaf</p>
+        <h1 class="titulo">Sistema de Vuelos</h1>
+        <p class="lead mb-0">Aeropuertos, líneas aéreas, aviones, programas, vuelos y escalas técnicas.</p>
     </div>
 
-    <!-- Tarjetas con los totales: ${...} lee los datos que el controller puso en el Model -->
+    <!-- ============ TARJETAS DE CONTADORES ============ -->
     <div class="row g-4 mb-4">
+
+        <!-- Aeropuertos -->
         <div class="col-md-4">
-            <a class="tarjeta" th:href="@{/categorias}">
-                <i class="bi bi-tags"></i>
-                <span class="numero" th:text="${totalCategorias}">0</span>
-                <span class="etiqueta">Categorías</span>
+            <a class="tarjeta" th:href="@{/aeropuertos}">
+                <i class="bi bi-geo-alt"></i>
+                <span class="numero" th:text="${totalAeropuertos}">0</span>
+                <span class="etiqueta">Aeropuertos</span>
                 <span class="detalle">Thymeleaf clásico: formulario con th:object</span>
             </a>
         </div>
+
+        <!-- Aviones -->
         <div class="col-md-4">
-            <a class="tarjeta" th:href="@{/productos}">
-                <i class="bi bi-box-seam"></i>
-                <span class="numero" th:text="${totalProductos}">0</span>
-                <span class="etiqueta">Productos</span>
-                <span class="detalle">La página consume la API REST con fetch()</span>
+            <a class="tarjeta" th:href="@{/aviones}">
+                <i class="bi bi-airplane"></i>
+                <span class="numero" th:text="${totalAviones}">0</span>
+                <span class="etiqueta">Aviones</span>
+                <span class="detalle">Relación @ManyToOne con ModeloAvion</span>
             </a>
         </div>
+
+        <!-- Vuelos -->
         <div class="col-md-4">
-            <a class="tarjeta" th:href="@{/relaciones}">
-                <i class="bi bi-people"></i>
-                <span class="numero" th:text="${totalClientes}">0</span>
-                <span class="etiqueta">Clientes</span>
-                <span class="detalle">Relaciones y favoritos</span>
+            <a class="tarjeta" th:href="@{/vuelos}">
+                <i class="bi bi-calendar-check"></i>
+                <span class="numero" th:text="${totalVuelos}">0</span>
+                <span class="etiqueta">Vuelos</span>
+                <span class="detalle">Instancias con fecha de un ProgramaVuelo</span>
             </a>
         </div>
     </div>
 
-    <!-- Mapa: que pagina usa que endpoint -->
+    <!-- ============ MAPA DE LA APLICACIÓN ============ -->
     <div class="card shadow-sm">
-        <div class="card-header fw-bold"><i class="bi bi-signpost-split"></i> Mapa de la aplicación</div>
+        <div class="card-header fw-bold">
+            <i class="bi bi-signpost-split"></i> Mapa de la aplicación
+        </div>
         <div class="table-responsive">
             <table class="table table-striped mb-0 align-middle">
-                <thead><tr><th>Página</th><th>Controller</th><th>Cómo obtiene los datos</th></tr></thead>
+                <thead>
+                <tr>
+                    <th>Página</th>
+                    <th>Controller</th>
+                    <th>Cómo obtiene los datos</th>
+                </tr>
+                </thead>
                 <tbody>
-                <tr><td><a th:href="@{/categorias}">/categorias</a></td><td>CategoriaVistaController</td><td>Model + th:each, formulario POST /categorias/guardar</td></tr>
-                <tr><td><a th:href="@{/productos}">/productos</a></td><td>ProductoVistaController</td><td>fetch() a <code>/api/productos/...</code> (GET, POST, PUT, DELETE)</td></tr>
-                <tr><td><a th:href="@{/relaciones}">/relaciones</a></td><td>RelacionVistaController</td><td>Consultas con JOIN FETCH + <code>/api/clientes/{id}/favoritos</code></td></tr>
-                <tr><td><a th:href="@{/reportes}">/reportes</a></td><td>ReporteController</td><td>Archivos: <code>/reportes/productos.xlsx</code> y <code>.pdf</code></td></tr>
+                <tr>
+                    <td><a th:href="@{/aeropuertos}">/aeropuertos</a></td>
+                    <td>AeropuertoVistaController</td>
+                    <td>Model + th:each, formulario POST /aeropuertos/guardar</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/lineas-aereas}">/lineas-aereas</a></td>
+                    <td>LineaAereaVistaController</td>
+                    <td>Model + th:each, formulario POST /lineas-aereas/guardar</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/modelos-avion}">/modelos-avion</a></td>
+                    <td>ModeloAvionVistaController</td>
+                    <td>Model + th:each, formulario POST /modelos-avion/guardar</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/aviones}">/aviones</a></td>
+                    <td>AvionVistaController</td>
+                    <td>Select de ModeloAvion + th:each</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/programas-vuelo}">/programas-vuelo</a></td>
+                    <td>ProgramaVueloVistaController</td>
+                    <td>3 selects: LineaAerea + Aeropuerto origen + destino</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/vuelos}">/vuelos</a></td>
+                    <td>VueloVistaController</td>
+                    <td>2 selects: Avion + ProgramaVuelo</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/escalas-tecnicas}">/escalas-tecnicas</a></td>
+                    <td>EscalaTecnicaVistaController</td>
+                    <td>2 selects: Vuelo + Aeropuerto + UNIQUE compuesto</td>
+                </tr>
+                <tr>
+                    <td><a th:href="@{/api/aeropuertos/listar}">/api/aeropuertos/listar</a></td>
+                    <td>AeropuertoController (REST)</td>
+                    <td>JSON: la misma tabla que ves en HTML, pero como API</td>
+                </tr>
                 </tbody>
             </table>
         </div>

@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Lineas Aereas')}"></head>
 <body class="bg-light">
-<nav th:replace="~{fragments/layout :: navbar('lineas-aereas')}"></nav>
+<nav th:replace="~{fragments/layout :: navbar('linea_aerea')}"></nav>
 
 <main class="container py-4">
 
@@ -72,7 +72,7 @@
                                     data-bs-toggle="collapse" data-bs-target="#panelFormulario"></button>
                         </div>
 
-                        <form th:action="@{/lineas-aereas/guardar}"
+                        <form th:action="@{/linea_aerea/guardar}"
                               th:object="${lineaAerea}"
                               method="post"
                               novalidate
@@ -134,7 +134,7 @@
                             </div>
 
                             <div class="col-12 d-flex justify-content-end gap-2 pt-2 border-top">
-                                <a th:href="@{/lineas-aereas}" class="btn btn-light rounded-pill px-4">
+                                <a th:href="@{/linea_aerea}" class="btn btn-light rounded-pill px-4">
                                     Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-primary rounded-pill px-4">
@@ -197,12 +197,12 @@
                                 </span>
                             </td>
                             <td class="text-end text-nowrap">
-                                <a th:href="@{/lineas-aereas/{id}/editar(id=${l.id})}"
+                                <a th:href="@{/linea_aerea/{id}/editar(id=${l.id})}"
                                    class="btn btn-sm btn-light rounded-circle"
                                    title="Editar">
                                     <i class="bi bi-pencil text-primary"></i>
                                 </a>
-                                <form th:action="@{/lineas-aereas/{id}/eliminar(id=${l.id})}"
+                                <form th:action="@{/linea_aerea/{id}/eliminar(id=${l.id})}"
                                       method="post" class="d-inline">
                                     <button type="submit"
                                             class="btn btn-sm btn-light rounded-circle"

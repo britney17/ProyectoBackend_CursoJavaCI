@@ -11,7 +11,7 @@ import java.net.URI;   // Para la cabecera "Location" del recurso creado
 import java.util.List; // Lista de lineas aereas
 
 @RestController                     // Atiende peticiones HTTP y responde JSON
-@RequestMapping("/api/lineas-aereas") // Prefijo comun de todas las rutas de este controller
+@RequestMapping("/api/linea_aerea") // Prefijo comun de todas las rutas de este controller
 @RequiredArgsConstructor            // Spring inyecta el repositorio por constructor
 public class LineaAereaController {
 
@@ -50,7 +50,7 @@ public class LineaAereaController {
         }
         LineaAerea guardada = repo.save(linea);                             // INSERT INTO lineas_aereas ...
         return ResponseEntity
-                .created(URI.create("/api/lineas-aereas/obtener/" + guardada.getId())) // 201 Created + Location
+                .created(URI.create("/api/linea_aerea/obtener/" + guardada.getId())) // 201 Created + Location
                 .body(guardada);                                                        // Devuelve la linea creada
     }
 

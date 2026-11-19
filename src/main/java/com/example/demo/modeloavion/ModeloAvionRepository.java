@@ -11,4 +11,7 @@ public interface ModeloAvionRepository extends JpaRepository<ModeloAvion, Long> 
 
     // Para el UNIQUE de codigoModelo en el POST
     boolean existsByCodigoModelo(String codigoModelo);
+
+    // En ModeloAvionRepository.java
+    ModeloAvion findByCodigoModelo(String codigoModelo);
 }

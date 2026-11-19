@@ -13,7 +13,7 @@ import java.net.URI;   // Para la cabecera "Location" del recurso creado
 import java.util.List; // Lista de aviones
 
 @RestController                     // Atiende peticiones HTTP y responde JSON
-@RequestMapping("/api/aviones")     // Prefijo comun de todas las rutas de este controller
+@RequestMapping("/api/avion")     // Prefijo comun de todas las rutas de este controller
 @RequiredArgsConstructor            // Spring inyecta los repositorios por constructor
 public class AvionController {
 

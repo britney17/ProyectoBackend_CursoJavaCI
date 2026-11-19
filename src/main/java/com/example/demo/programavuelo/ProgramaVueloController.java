@@ -15,7 +15,7 @@ import java.net.URI;   // Para la cabecera "Location" del recurso creado
 import java.util.List; // Lista de programas
 
 @RestController                          // Atiende peticiones HTTP y responde JSON
-@RequestMapping("/api/programas-vuelo")  // Prefijo comun de todas las rutas
+@RequestMapping("/api/programasvuelo")  // Prefijo comun de todas las rutas
 @RequiredArgsConstructor                 // Spring inyecta los repositorios por constructor
 public class ProgramaVueloController {
 

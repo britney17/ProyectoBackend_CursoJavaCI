@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Modelos de Avion')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/layout :: navbar('modeloavion')}"></nav>
+
+<main class="container py-4">
+
+    <!-- ===================== ENCABEZADO ===================== -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-4 bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
+                 style="width:56px;height:56px;">
+                <i class="bi bi-cpu fs-3"></i>
+            </div>
+            <div>
+                <h1 class="h3 mb-0 fw-bold">Modelos de Avion</h1>
+                <p class="text-muted mb-0 small">Especificaciones tecnicas de las aeronaves.</p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge rounded-pill text-bg-light border px-3 py-2">
+                <i class="bi bi-database me-1"></i>
+                <span th:text="${modelos != null ? #lists.size(modelos) : 0}">0</span> registros
+            </span>
+            <button class="btn btn-primary rounded-pill px-3"
+                    data-bs-toggle="collapse" data-bs-target="#panelFormulario">
+                <i class="bi bi-plus-lg me-1"></i> Nuevo
+            </button>
+        </div>
+    </div>
+
+    <!-- ===================== TOASTS ===================== -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1080;">
+        <div th:if="${ok}" class="toast align-items-center text-bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle me-1"></i><span th:text="${ok}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        <div th:if="${error}" class="toast align-items-center text-bg-danger border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${error}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ===================== FORMULARIO ===================== -->
+        <div class="col-12">
+            <div class="collapse show" id="panelFormulario">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 mb-0 fw-semibold">
+                                <i class="bi bi-pencil-square me-1 text-primary"></i>
+                                <span th:text="${modeloAvion != null and modeloAvion.id != null
+                                                 ? 'Editar modelo de avion' : 'Nuevo modelo de avion'}">
+                                    Nuevo modelo de avion
+                                </span>
+                            </h2>
+                            <button type="button" class="btn-close"
+                                    data-bs-toggle="collapse" data-bs-target="#panelFormulario"></button>
+                        </div>
+
+                        <form th:action="@{/modeloavion/guardar}"
+                              th:object="${modeloAvion}"
+                              method="post"
+                              novalidate
+                              class="row g-3">
+
+                            <input type="hidden" th:field="*{id}"/>
+
+                            <!-- Codigo del modelo -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Codigo
+                                </label>
+                                <input type="text"
+                                       th:field="*{codigoModelo}"
+                                       class="form-control form-control-lg text-uppercase font-monospace"
+                                       maxlength="20"
+                                       placeholder="B737"
+                                       required/>
+                                <div th:if="${#fields.hasErrors('codigoModelo')}"
+                                     th:errors="*{codigoModelo}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Numero de plazas (Integer) -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Numero de plazas
+                                </label>
+                                <input type="number"
+                                       th:field="*{numeroPlazas}"
+                                       class="form-control form-control-lg"
+                                       min="1"
+                                       step="1"
+                                       placeholder="180"
+                                       required/>
+                                <div th:if="${#fields.hasErrors('numeroPlazas')}"
+                                     th:errors="*{numeroPlazas}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Capacidad de carga (BigDecimal) -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Capacidad de carga (ton)
+                                </label>
+                                <input type="number"
+                                       th:field="*{capacidadCarga}"
+                                       class="form-control form-control-lg"
+                                       min="0"
+                                       step="0.01"
+                                       placeholder="20.50"
+                                       required/>
+                                <div th:if="${#fields.hasErrors('capacidadCarga')}"
+                                     th:errors="*{capacidadCarga}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Activo -->
+                            <div class="col-md-4 d-flex align-items-end">
+                                <div class="form-check form-switch mb-2">
+                                    <input type="checkbox"
+                                           th:field="*{activo}"
+                                           class="form-check-input"
+                                           role="switch"/>
+                                    <label class="form-check-label">Activo</label>
+                                </div>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end gap-2 pt-2 border-top">
+                                <a th:href="@{/modeloavion}" class="btn btn-light rounded-pill px-4">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                    <i class="bi bi-save me-1"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== TABLA ===================== -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white border-0 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h2 class="h6 mb-0 fw-semibold">
+                        <i class="bi bi-list-ul me-1 text-primary"></i>Listado
+                    </h2>
+                    <div class="input-group input-group-sm" style="max-width:280px;">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text"
+                               id="buscarModelo"
+                               class="form-control border-start-0 bg-light"
+                               placeholder="Buscar modelo..."/>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" id="tablaModelos">
+                        <thead class="table-light">
+                        <tr class="small text-uppercase text-muted">
+                            <th style="width:60px">#</th>
+                            <th style="width:120px">Codigo</th>
+                            <th class="text-end" style="width:130px">Plazas</th>
+                            <th class="text-end" style="width:160px">Carga (ton)</th>
+                            <th style="width:110px">Estado</th>
+                            <th style="width:120px" class="text-end">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="m : ${modelos}">
+                            <td class="text-muted small" th:text="${m.id}"></td>
+                            <td>
+                                <span class="badge rounded-pill text-bg-primary font-monospace px-3 py-2"
+                                      th:text="${m.codigoModelo}">B737</span>
+                            </td>
+                            <td class="text-end fw-semibold" th:text="${m.numeroPlazas}">0</td>
+                            <td class="text-end" th:text="${m.capacidadCarga}">0.00</td>
+                            <td>
+                                <span th:if="${m.activo}"
+                                      class="badge rounded-pill text-bg-success-subtle text-success-emphasis border border-success-subtle">
+                                    <i class="bi bi-check-circle me-1"></i>Activo
+                                </span>
+                                <span th:unless="${m.activo}"
+                                      class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                                    <i class="bi bi-slash-circle me-1"></i>Inactivo
+                                </span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a th:href="@{/modeloavion/{id}/editar(id=${m.id})}"
+                                   class="btn btn-sm btn-light rounded-circle"
+                                   title="Editar">
+                                    <i class="bi bi-pencil text-primary"></i>
+                                </a>
+                                <form th:action="@{/modeloavion/{id}/eliminar(id=${m.id})}"
+                                      method="post" class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-light rounded-circle"
+                                            title="Eliminar"
+                                            onclick="return confirm('Eliminar el modelo?')">
+                                        <i class="bi bi-trash text-danger"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${modelos == null or #lists.isEmpty(modelos)}">
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox display-5 d-block mb-2 text-secondary"></i>
+                                <div class="fw-semibold">No hay modelos registrados</div>
+                                <div class="small">Usa el boton "Nuevo" para agregar el primero.</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.toast').forEach(t => {
+            new bootstrap.Toast(t, { delay: 4000 }).show();
+        });
+
+        const input = document.getElementById('buscarModelo');
+        if (!input) return;
+        input.addEventListener('input', () => {
+            const q = input.value.trim().toLowerCase();
+            document.querySelectorAll('#tablaModelos tbody tr').forEach(tr => {
+                if (tr.cells.length < 6) return;
+                tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -14,4 +14,7 @@ public interface AvionRepository extends JpaRepository<Avion, Long> {
 
     // Para el UNIQUE de numeroSerie en el POST
     boolean existsByNumeroSerie(String numeroSerie);
+
+    Avion findByNumeroSerie(String numeroSerie);
+
 }

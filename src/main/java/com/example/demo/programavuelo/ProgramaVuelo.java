@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity                          // Esta clase es una ENTIDAD
-@Table(name = "programa_vuelos") // Nombre de la tabla en la BD
+@Table(name = "programavuelo") // Nombre de la tabla en la BD
 @Data                            // Lombok: getters, setters, toString, equals y hashCode
 @NoArgsConstructor               // Lombok: constructor vacio (obligatorio para JPA)
 public class ProgramaVuelo {

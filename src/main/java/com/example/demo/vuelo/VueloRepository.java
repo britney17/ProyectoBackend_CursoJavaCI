@@ -24,4 +24,7 @@ public interface VueloRepository extends JpaRepository<Vuelo, Long> {
 
     // Para el UNIQUE de codigoVuelo en el POST
     boolean existsByCodigoVuelo(String codigoVuelo);
+
+    // En VueloRepository.java
+    Vuelo findByCodigoVuelo(String codigoVuelo);
 }

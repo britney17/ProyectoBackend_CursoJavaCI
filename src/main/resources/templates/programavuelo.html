@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Programas de Vuelo')}"></head>
+<body class="bg-light">
+<nav th:replace="~{fragments/layout :: navbar('programavuelo')}"></nav>
+
+<main class="container py-4">
+
+    <!-- ===================== ENCABEZADO ===================== -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-4 bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
+                 style="width:56px;height:56px;">
+                <i class="bi bi-calendar-week fs-3"></i>
+            </div>
+            <div>
+                <h1 class="h3 mb-0 fw-bold">Programas de Vuelo</h1>
+                <p class="text-muted mb-0 small">Vuelos recurrentes por dia de la semana.</p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge rounded-pill text-bg-light border px-3 py-2">
+                <i class="bi bi-database me-1"></i>
+                <span th:text="${programas != null ? #lists.size(programas) : 0}">0</span> registros
+            </span>
+            <button class="btn btn-primary rounded-pill px-3"
+                    data-bs-toggle="collapse" data-bs-target="#panelFormulario">
+                <i class="bi bi-plus-lg me-1"></i> Nuevo
+            </button>
+        </div>
+    </div>
+
+    <!-- ===================== TOASTS ===================== -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1080;">
+        <div th:if="${ok}" class="toast align-items-center text-bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle me-1"></i><span th:text="${ok}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        <div th:if="${error}" class="toast align-items-center text-bg-danger border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle me-1"></i><span th:text="${error}"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ===================== FORMULARIO ===================== -->
+        <div class="col-12">
+            <div class="collapse show" id="panelFormulario">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 mb-0 fw-semibold">
+                                <i class="bi bi-pencil-square me-1 text-primary"></i>
+                                <span th:text="${programaVuelo != null and programaVuelo.id != null
+                                                 ? 'Editar programa' : 'Nuevo programa'}">
+                                    Nuevo programa
+                                </span>
+                            </h2>
+                            <button type="button" class="btn-close"
+                                    data-bs-toggle="collapse" data-bs-target="#panelFormulario"></button>
+                        </div>
+
+                        <form th:action="@{/programavuelo/guardar}"
+                              th:object="${programaVuelo}"
+                              method="post"
+                              novalidate
+                              class="row g-3">
+
+                            <input type="hidden" th:field="*{id}"/>
+
+                            <!-- Codigo del programa -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Codigo
+                                </label>
+                                <input type="text"
+                                       th:field="*{codigoPro}"
+                                       class="form-control form-control-lg text-uppercase font-monospace"
+                                       maxlength="20"
+                                       placeholder="PRO-001"
+                                       required/>
+                                <div th:if="${#fields.hasErrors('codigoPro')}"
+                                     th:errors="*{codigoPro}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Numero de vuelo -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Numero de vuelo
+                                </label>
+                                <input type="text"
+                                       th:field="*{numeVuelo}"
+                                       class="form-control form-control-lg font-monospace"
+                                       maxlength="10"
+                                       placeholder="AV100"
+                                       required/>
+                                <div th:if="${#fields.hasErrors('numeVuelo')}"
+                                     th:errors="*{numeVuelo}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Dias de la semana -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Dias de la semana
+                                </label>
+                                <input type="text"
+                                       th:field="*{diasSemana}"
+                                       class="form-control form-control-lg"
+                                       maxlength="20"
+                                       placeholder="L,M,X,J,V"
+                                       required/>
+                                <div th:if="${#fields.hasErrors('diasSemana')}"
+                                     th:errors="*{diasSemana}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Select Linea Aerea -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Linea aerea
+                                </label>
+                                <select th:field="*{lineaAerea}" class="form-select" required>
+                                    <option value="">-- Seleccione una linea --</option>
+                                    <option th:each="l : ${lineas}"
+                                            th:value="${l.id}"
+                                            th:text="${l.codigoLinea + ' - ' + l.nombreLinea}">
+                                    </option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('lineaAerea')}"
+                                     th:errors="*{lineaAerea}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Select Aeropuerto Origen -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Aeropuerto de origen
+                                </label>
+                                <select th:field="*{aeropuertoOrigen}" class="form-select" required>
+                                    <option value="">-- Seleccione origen --</option>
+                                    <option th:each="a : ${aeropuertos}"
+                                            th:value="${a.id}"
+                                            th:text="${a.codigoAeropuerto + ' - ' + a.nombre}">
+                                    </option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('aeropuertoOrigen')}"
+                                     th:errors="*{aeropuertoOrigen}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Select Aeropuerto Destino -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted">
+                                    Aeropuerto de destino
+                                </label>
+                                <select th:field="*{aeropuertoDestino}" class="form-select" required>
+                                    <option value="">-- Seleccione destino --</option>
+                                    <option th:each="a : ${aeropuertos}"
+                                            th:value="${a.id}"
+                                            th:text="${a.codigoAeropuerto + ' - ' + a.nombre}">
+                                    </option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('aeropuertoDestino')}"
+                                     th:errors="*{aeropuertoDestino}"
+                                     class="text-danger small mt-1"></div>
+                            </div>
+
+                            <!-- Activo -->
+                            <div class="col-md-4 d-flex align-items-end">
+                                <div class="form-check form-switch mb-2">
+                                    <input type="checkbox"
+                                           th:field="*{activo}"
+                                           class="form-check-input"
+                                           role="switch"/>
+                                    <label class="form-check-label">Activo</label>
+                                </div>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end gap-2 pt-2 border-top">
+                                <a th:href="@{/programavuelo}" class="btn btn-light rounded-pill px-4">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                    <i class="bi bi-save me-1"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== TABLA ===================== -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white border-0 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h2 class="h6 mb-0 fw-semibold">
+                        <i class="bi bi-list-ul me-1 text-primary"></i>Listado
+                    </h2>
+                    <div class="input-group input-group-sm" style="max-width:280px;">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text"
+                               id="buscarPrograma"
+                               class="form-control border-start-0 bg-light"
+                               placeholder="Buscar programa..."/>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" id="tablaProgramas">
+                        <thead class="table-light">
+                        <tr class="small text-uppercase text-muted">
+                            <th style="width:60px">#</th>
+                            <th>Codigo</th>
+                            <th>Nume Vuelo</th>
+                            <th>Dias</th>
+                            <th>Linea Aerea</th>
+                            <th>Ruta</th>
+                            <th style="width:110px">Estado</th>
+                            <th style="width:120px" class="text-end">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="p : ${programas}">
+                            <td class="text-muted small" th:text="${p.id}"></td>
+                            <td>
+                                <span class="badge rounded-pill text-bg-primary font-monospace px-3 py-2"
+                                      th:text="${p.codigoPro}">PRO-001</span>
+                            </td>
+                            <td class="font-monospace fw-semibold" th:text="${p.numeVuelo}"></td>
+                            <td class="text-muted" th:text="${p.diasSemana}"></td>
+                            <td th:text="${p.lineaAerea != null ? p.lineaAerea.nombreLinea : '—'}"></td>
+                            <td>
+                                <span th:if="${p.aeropuertoOrigen != null and p.aeropuertoDestino != null}">
+                                    <span class="badge text-bg-light border"
+                                          th:text="${p.aeropuertoOrigen.codigoAeropuerto}">MGA</span>
+                                    <i class="bi bi-arrow-right text-muted mx-1"></i>
+                                    <span class="badge text-bg-light border"
+                                          th:text="${p.aeropuertoDestino.codigoAeropuerto}">MIA</span>
+                                </span>
+                                <span th:if="${p.aeropuertoOrigen == null or p.aeropuertoDestino == null}"
+                                      class="badge text-bg-secondary">Sin ruta</span>
+                            </td>
+                            <td>
+                                <span th:if="${p.activo}"
+                                      class="badge rounded-pill text-bg-success-subtle text-success-emphasis border border-success-subtle">
+                                    <i class="bi bi-check-circle me-1"></i>Activo
+                                </span>
+                                <span th:unless="${p.activo}"
+                                      class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                                    <i class="bi bi-slash-circle me-1"></i>Inactivo
+                                </span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a th:href="@{/programavuelo/{id}/editar(id=${p.id})}"
+                                   class="btn btn-sm btn-light rounded-circle"
+                                   title="Editar">
+                                    <i class="bi bi-pencil text-primary"></i>
+                                </a>
+                                <form th:action="@{/programavuelo/{id}/eliminar(id=${p.id})}"
+                                      method="post" class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-light rounded-circle"
+                                            title="Eliminar"
+                                            onclick="return confirm('Eliminar el programa?')">
+                                        <i class="bi bi-trash text-danger"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${programas == null or #lists.isEmpty(programas)}">
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox display-5 d-block mb-2 text-secondary"></i>
+                                <div class="fw-semibold">No hay programas registrados</div>
+                                <div class="small">Usa el boton "Nuevo" para agregar el primero.</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.toast').forEach(t => {
+            new bootstrap.Toast(t, { delay: 4000 }).show();
+        });
+
+        const input = document.getElementById('buscarPrograma');
+        if (!input) return;
+        input.addEventListener('input', () => {
+            const q = input.value.trim().toLowerCase();
+            document.querySelectorAll('#tablaProgramas tbody tr').forEach(tr => {
+                if (tr.cells.length < 8) return;
+                tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    });
+</script>
+</body>
+</html>

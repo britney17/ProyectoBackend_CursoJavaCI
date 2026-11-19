@@ -2,6 +2,9 @@
 package com.example.demo.programavuelo;
 
 import org.springframework.data.jpa.repository.JpaRepository; // CRUD listo
+
+import com.example.demo.vuelo.Vuelo;
+
 import java.util.List;
 
 public interface ProgramaVueloRepository extends JpaRepository<ProgramaVuelo, Long> {
@@ -20,4 +23,9 @@ public interface ProgramaVueloRepository extends JpaRepository<ProgramaVuelo, Lo
 
     // Para el UNIQUE de codigoPro en el POST
     boolean existsByCodigoPro(String codigoPro);
+
+    // En ProgramaVueloRepository.java
+    ProgramaVuelo findByCodigoPro(String codigoPro);
+
+    
 }
